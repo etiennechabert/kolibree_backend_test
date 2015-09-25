@@ -21,3 +21,11 @@ I decided to create 2 tables :
   *  The creation_datetime field is ... a datetime ;) this value will be automaticly set to 'now' on the creation (if auto_now option works as I expect). My idea is to create a DEFINE to setup how long a token is valid and to use relative DateTime comparaison to check if the token is still valid or not
 
 -- END Edit 23:52 -> Going to read documentation about tests
+
+# Edit 00:12
+
+I finaly manage to have a properly working migration (CharFields were missing mendatory parameters)
+
+Let's move on test 
+
+-- END edit 00:14
