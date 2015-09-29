@@ -2,7 +2,7 @@
 
 Test started at 22:01 - 25/09/2015
 
-# Edit 23:31
+# Edit 23:31 - 25/09/2015
 
 Difficult start, I wasted time to setup my environment properly, my IDE was stucked on python version 2.6.9 and it toke me a while to figure how to fix it. 
 
@@ -20,12 +20,21 @@ I decided to create 2 tables :
   *  The token field is a UUIDField, I am not 100% sure about what is it for, but it looks to be able to genreate unique 32 chars long string what is good for my need ;). 
   *  The creation_datetime field is ... a datetime ;) this value will be automaticly set to 'now' on the creation (if auto_now option works as I expect). My idea is to create a DEFINE to setup how long a token is valid and to use relative DateTime comparaison to check if the token is still valid or not
 
--- END Edit 23:52 -> Going to read documentation about tests
-
-# Edit 00:12
+# Edit 00:12 - 26/09/2015
 
 I finaly manage to have a properly working migration (CharFields were missing mendatory parameters)
 
-Let's move on test 
+Let's move on models basic tests 
 
--- END edit 00:14
+# Edit 04:00 - 29/09/2015
+
+I had to do a break on this test during the last 3 days.
+
+The base features of my models are now finished :
+  * Creation of the user
+  * Creation of the token
+  * Validation of the token (according to expiration settings)
+
+This features are fully tested (100% coverage)
+
+I am now going to work on the API side of this project - I choosed to use django-rest-framework to do so
