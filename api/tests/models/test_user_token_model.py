@@ -19,7 +19,6 @@ class userTokenTestCase(TestCase):
         token = user.usertoken_set.create()
         self.assertEqual(token.is_valid(), True)
 
-
     def test_exipired_token(self):
         user = User.objects.get(first_name='Etienne', last_name='Chabert')
         token = user.usertoken_set.create()
