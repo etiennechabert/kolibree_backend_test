@@ -4,11 +4,11 @@ from datetime import datetime, timedelta
 from django.core.exceptions import ObjectDoesNotExist
 from django.db import models
 from django.db.models import CASCADE
-from django.db.models.signals import pre_save, post_save
+from django.db.models.signals import pre_save
 from django.dispatch import receiver
-from api.models.user import User, UserSerializer
+from api.models.user import UserSerializer
 from rest_framework import serializers
-from rest_framework.status import HTTP_400_BAD_REQUEST, HTTP_200_OK, HTTP_409_CONFLICT, HTTP_401_UNAUTHORIZED
+from rest_framework.status import HTTP_400_BAD_REQUEST, HTTP_200_OK
 
 class UserToken(models.Model):
     TOKEN_VALIDITY_IN_DAYS = 0
@@ -20,6 +20,7 @@ class UserToken(models.Model):
     token = models.UUIDField(primary_key=True)
     creation_dateTime = models.DateTimeField()
 
+    # I overload the setup method to be able to assign a datetime on the first save
     def save(self, *args, **kwargs):
         if not self.creation_dateTime:
             self.creation_dateTime = timezone.now()
@@ -37,6 +38,7 @@ class UserToken(models.Model):
             return True
         return False
 
+# Serialize class for userToken
 class UserTokenSerializer(serializers.HyperlinkedModelSerializer):
     creation_dateTime = serializers.DateTimeField()
 
@@ -44,8 +46,8 @@ class UserTokenSerializer(serializers.HyperlinkedModelSerializer):
         model = UserToken
         fields = ('token', 'creation_dateTime')
 
-############## CALLBACKS FOR UserToken ############
-
+# The assignation of the token is handle by this callback
+# We check the uniqueness of the randomized token by catching a DoesNotExist exception
 @receiver(pre_save, sender=UserToken)
 def userToken_attribution(sender, instance, *args, **kwargs):
     while instance.token == None:
@@ -55,6 +57,9 @@ def userToken_attribution(sender, instance, *args, **kwargs):
         except ObjectDoesNotExist:
             instance.token = new_token
 
+# This helper method is used from the view
+# Probably a bad idea to return HTML_RESPONSE code here,
+# But I prefer to have short views
 def get_user_for_token(data):
     try:
         token = UserToken.objects.get(token=data['token'])

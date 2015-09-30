@@ -34,12 +34,15 @@ class User(models.Model):
             'data' : 'new user created'
         }
 
+    # This helper method create a new token in case of the previous one expired (or does not exist)
     def get_valid_token(self):
         element = self.usertoken_set.all().order_by('-creation_dateTime').first()
         if element == None or element.is_valid() == False:
             return self.usertoken_set.create()
         return element
 
+# Helper class, it's helped me to handle the Auth logic, Django probably provide mecanism of auth we could use
+# I just preferred to develop mine to practise a bit
 class UserAuth():
     def auth_process(self, params):
         try:
@@ -68,6 +71,7 @@ class UserAuth():
             'code' : HTTP_401_UNAUTHORIZED
         }
 
+# Serializer for User rendering
 class UserSerializer(serializers.HyperlinkedModelSerializer):
     date_of_birth = serializers.DateField()
 
@@ -77,4 +81,5 @@ class UserSerializer(serializers.HyperlinkedModelSerializer):
 
 @receiver(pre_save, sender=User)
 def userPassword_encryption(sender, instance, *args, **kwargs):
-    instance.password = make_password(instance.password)
+    if instance.id == None:
+        instance.password = make_password(instance.password)
