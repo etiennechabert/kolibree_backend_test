@@ -18,9 +18,9 @@ def users_usage():
                             'POST' : 'Try to authenticate (get a token)'
                         }
                     },
-                    'api/users/:token' : {
+                    'api/users/retrieve' : {
                         'methods' : {
-                            'GET' : 'Access user\'s data according to the token (require a token)'
+                            'POST' : 'Access user\'s data according to the token (require a token)'
                         }
                     },
 
