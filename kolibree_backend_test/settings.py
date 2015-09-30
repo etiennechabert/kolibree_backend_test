@@ -37,6 +37,7 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'rest_framework',
     'api'
 )
 
@@ -56,7 +57,9 @@ ROOT_URLCONF = 'kolibree_backend_test.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [
+            'api/views'
+        ],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [

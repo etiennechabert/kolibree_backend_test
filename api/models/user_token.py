@@ -5,6 +5,7 @@ from django.db import models
 from django.db.models import CASCADE
 from django.db.models.signals import pre_save
 from django.dispatch import receiver
+from rest_framework import serializers
 
 class UserToken(models.Model):
     TOKEN_VALIDITY_IN_DAYS = 0
@@ -27,6 +28,11 @@ class UserToken(models.Model):
         if self.creation_dateTime + validity_delta > now:
             return True
         return False
+
+class UserTokenSerializer(serializers.HyperlinkedModelSerializer):
+    class Meta:
+        model = UserToken
+        fields = ('token', 'creation_datetime')
 
 ############## CALLBACKS FOR UserToken ############
 

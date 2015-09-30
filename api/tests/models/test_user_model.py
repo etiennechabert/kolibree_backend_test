@@ -21,5 +21,5 @@ class userTestCase(TestCase):
             self.user.clean_fields()
 
     def test_user_model_success(self):
-        user = User.objects.create(first_name='Etienne', last_name='Chabert', email='etienne.chabert@gmail.com', password='pass')
+        user = User.objects.create(first_name='Etienne', last_name='Chabert', email='etienne.chabert@gmail.com', password='pass', date_of_birth='1990-11-18')
         self.assertEqual(user.full_clean(), None)
