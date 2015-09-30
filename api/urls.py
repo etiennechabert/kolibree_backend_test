@@ -3,6 +3,8 @@ from api.views import user
 
 user_api_urls = [
     url(r'^$', user.users),
+    url(r'^auth$', user.auth),
+    url(r'^retrieve', user.retrieve)
 ]
 
 api_urls = [

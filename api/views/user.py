@@ -1,13 +1,10 @@
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework.status import HTTP_200_OK
-from api.models.user import User, UserSerializer
+from api.models.user import User, UserSerializer, UserAuth
 
-@api_view(['GET', 'POST'])
-def users(request):
-    if request.method == 'GET':
-        return Response(
-            {
+def users_usage():
+    return {
                 'methods' : {
                     'api/users' : {
                         'methods' : {
@@ -15,22 +12,34 @@ def users(request):
                             'POST' : 'Create the new user'
                         }
                     },
-                    'api/user' : {
+                    'api/users/auth' : {
                         'methods' : {
                             'POST' : 'Try to authenticate (get a token)'
                         }
                     },
-                    'api/user/:token' : {
+                    'api/users/:token' : {
                         'methods' : {
                             'GET' : 'Access user\'s data according to the token (require a token)'
                         }
                     },
 
                 }
-            }, HTTP_200_OK
-        )
+            }
+
+@api_view(['GET', 'POST'])
+def users(request):
+    if request.method == 'GET':
+        return Response(users_usage(), HTTP_200_OK)
     elif request.method == 'POST':
         response = User().handle_create(request.data)
         return Response(response['data'], response['code'])
 
+@api_view(['POST'])
+def auth(request):
+    data = request.data
+    response = UserAuth().auth_process(data)
+    return Response(response['data'], response['code'])
 
+@api_view(['POST'])
+def retrieve(request):
+    data = request.data
