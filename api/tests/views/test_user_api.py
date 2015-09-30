@@ -1,3 +1,5 @@
+from datetime import timedelta
+import uuid
 from rest_framework.test import APIRequestFactory
 from rest_framework.test import APITestCase
 from api.models import User
@@ -66,3 +68,34 @@ class TestUserApiAuth(APITestCase):
         response = self.client.post('/api/users/auth', data)
         self.assertEqual(response.status_code, 401)
         self.assertEqual('Bad email/password' in response.content, True)
+
+class TestUserApiRetrieve(APITestCase):
+    def setUp(self):
+        self.user = User(first_name='Etienne',last_name='Chabert',email='etienne.chabert@gmail.com',password='password',date_of_birth='1990-11-18')
+        self.user.save()
+
+    def test_user_valid_token(self):
+        token = self.user.get_valid_token()
+        data = {
+            'token' : token.token.__str__()
+        }
+        response = self.client.post('/api/users/retrieve',data)
+        self.assertEqual(response.status_code, 200)
+
+    def test_user_expired_token(self):
+        token = self.user.get_valid_token()
+        token.creation_dateTime -= timedelta(days=42)
+        token.save()
+
+        data = {
+            'token' : token.token.__str__()
+        }
+        response = self.client.post('/api/users/retrieve',data)
+        self.assertEqual(response.status_code, 400)
+
+    def test_user_unknown_token(self):
+        data = {
+            'token' : uuid.uuid4()
+        }
+        response = self.client.post('/api/users/retrieve',data)
+        self.assertEqual(response.status_code, 400)

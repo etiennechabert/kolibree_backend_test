@@ -1,11 +1,14 @@
 import uuid
+from django.utils import timezone
 from datetime import datetime, timedelta
 from django.core.exceptions import ObjectDoesNotExist
 from django.db import models
 from django.db.models import CASCADE
-from django.db.models.signals import pre_save
+from django.db.models.signals import pre_save, post_save
 from django.dispatch import receiver
+from api.models.user import User, UserSerializer
 from rest_framework import serializers
+from rest_framework.status import HTTP_400_BAD_REQUEST, HTTP_200_OK, HTTP_409_CONFLICT, HTTP_401_UNAUTHORIZED
 
 class UserToken(models.Model):
     TOKEN_VALIDITY_IN_DAYS = 0
@@ -15,7 +18,12 @@ class UserToken(models.Model):
 
     user = models.ForeignKey('User', on_delete=CASCADE)
     token = models.UUIDField(primary_key=True)
-    creation_dateTime = models.DateTimeField(auto_now=True)
+    creation_dateTime = models.DateTimeField()
+
+    def save(self, *args, **kwargs):
+        if not self.creation_dateTime:
+            self.creation_dateTime = timezone.now()
+        return super(UserToken, self).save(*args, **kwargs)
 
     def is_valid(self):
         validity_delta = timedelta(
@@ -30,9 +38,11 @@ class UserToken(models.Model):
         return False
 
 class UserTokenSerializer(serializers.HyperlinkedModelSerializer):
+    creation_dateTime = serializers.DateTimeField()
+
     class Meta:
         model = UserToken
-        fields = ('token', 'creation_datetime')
+        fields = ('token', 'creation_dateTime')
 
 ############## CALLBACKS FOR UserToken ############
 
@@ -44,3 +54,22 @@ def userToken_attribution(sender, instance, *args, **kwargs):
             UserToken.objects.get(token=new_token)
         except ObjectDoesNotExist:
             instance.token = new_token
+
+def get_user_for_token(data):
+    try:
+        token = UserToken.objects.get(token=data['token'])
+        if token.is_valid():
+            return {
+                'data' : {
+                    'user' : UserSerializer(token.user).data
+                },
+                'code' : HTTP_200_OK
+            }
+    except ObjectDoesNotExist as e:
+        pass
+    return {
+        'data' : {
+            'user' : None,
+        },
+        'code' : HTTP_400_BAD_REQUEST
+    }

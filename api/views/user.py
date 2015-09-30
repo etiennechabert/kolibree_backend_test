@@ -2,6 +2,7 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework.status import HTTP_200_OK
 from api.models.user import User, UserSerializer, UserAuth
+from api.models.user_token import get_user_for_token
 
 def users_usage():
     return {
@@ -43,3 +44,5 @@ def auth(request):
 @api_view(['POST'])
 def retrieve(request):
     data = request.data
+    response = get_user_for_token(data)
+    return Response(response['data'], response['code'])
