@@ -6,7 +6,7 @@ I was in a rush during my last month of work, and needed a break a the end of my
 I began this test Saturday, and work on it with an average of 3H / Day for a total arround 10-12h of work
 It was a bit painful to be honest (my first run with Django) ;) Exceptions were sometimes a bit hard to understand and fix, the framework looks pretty strict (this is a good point for me)
 
-I will be happy to talk with you about the choices I made, even if I am not totally confident about them ;) 
+I will be happy to talk with you about the choices I made, even if I am not totally confident about it ;) 
 
 # API Actions
 * API Root page (api/users [GET])
