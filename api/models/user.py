@@ -6,7 +6,6 @@ from django.dispatch import receiver
 from rest_framework import serializers
 from rest_framework.status import HTTP_400_BAD_REQUEST, HTTP_200_OK, HTTP_409_CONFLICT, HTTP_401_UNAUTHORIZED
 
-
 class User(models.Model):
     first_name = models.CharField(max_length=100, blank=False, null=False)
     last_name = models.CharField(max_length=100, blank=False, null=False)
@@ -39,7 +38,7 @@ class User(models.Model):
         element = self.usertoken_set.all().order_by('-creation_dateTime').first()
         if element == None or element.is_valid() == False:
             return self.usertoken_set.create()
-        return element;
+        return element
 
 class UserAuth():
     def auth_process(self, params):
