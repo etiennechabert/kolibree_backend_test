@@ -1,12 +1,6 @@
-# Welcome
-
-# First impression about this test
-First of all I would like to apologize for the deliver delay of this test.
-I was in a rush during my last month of work, and needed a break a the end of my previous contract (last wednesday).
-I began this test Saturday, and work on it with an average of 3H / Day for a total arround 10-12h of work
-It was a bit painful to be honest (my first run with Django) ;) Exceptions were sometimes a bit hard to understand and fix, the framework looks pretty strict (this is a good point for me)
-
-I will be happy to talk with you about the choices I made, even if I am not totally confident about it ;) 
+# Details about this Repository
+This is the first application I made with Django (A Python Framwork). I made it in about 10 hours in september 2015. The goal was to design a simple API (Register / Authenticate / Get user's details)
+I made it for a Job interview. On the 2nd part (-> Additionnal details about authentication) I am explaning the logic of my implementation and answering this question : 'How to avoid entering a password for the user ?'.
 
 # API Actions
 * API Root page (api/users [GET])
@@ -21,14 +15,12 @@ I will be happy to talk with you about the choices I made, even if I am not tota
 { "email" : "mail@mail.com", "password" : "mon_pass" }
 
 * Retrieve user (api/users/retrieve [POST])
-    * Simply copy past the response of the previous action to get your token
+    * Simply copy past the response of the previous action, this is your token (1H validity)
 
 # Additionnal details about authentication
 
-To handle the expiration of the token : The token is a separate model, with a 1-N relation with the user (1 User - N Tokens). When the user authenticate if we are not able to found an active token (mean still valid) we create a new one. On the creation we attribute a datetime to the token. By this way we know when the token expirate.
+To handle the expiration of the token : The token is a separate model, with a 1-N relation with the user (1 User - N Tokens). When the user authenticate if we are not able to found an active token (mean still valid) we create a new one. On the creation we attribute a datetime to the token. By this way we know when the token expirate (1 hour latter).
 
 The advantage of using a separate table for the token is to keep traces of all the authentication of the user (we may imagine tracking IP, bad authentication and so on).
 
 A 'sexy' by heavy authentication system to avoid entering password : During the registration step of a User, the server generate a private / public key. The public key is shared with the User, we could then imagine fully encrypted exchange between server and client. No need to ask a password to the client, all requests will be impossible to read without the appropriate key. The password is only required to get / generate a new key (if necessary).
-
-This solution is a bit overkill, but I like it ;)
